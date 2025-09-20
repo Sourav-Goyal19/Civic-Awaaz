@@ -1,5 +1,10 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Home() {
-  return <Button>Click Me</Button>;
+  return (
+    <Button asChild>
+      <Link href="/dashboard">Click Me</Link>
+    </Button>
+  );
 }

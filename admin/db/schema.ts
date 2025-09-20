@@ -1,64 +1,69 @@
 import { pgTable, uuid, text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
-export const users = pgTable("users", {
+export const usersTable = pgTable("users", {
   id: uuid("id").defaultRandom().primaryKey(),
   name: text("name").notNull(),
   email: varchar("email", { length: 255 }).unique().notNull(),
   role: varchar("role", { length: 20 }).notNull(), // "citizen" | "admin" | "officer"
+  password: text("password").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const complaints = pgTable("complaints", {
+export const complaintsTable = pgTable("complaints", {
   id: uuid("id").defaultRandom().primaryKey(),
   title: text("title").notNull(),
   description: text("description"),
   location: text("location"),
   status: varchar("status", { length: 20 }).default("pending").notNull(), // pending | assigned | resolved
   createdBy: uuid("created_by")
-    .references(() => users.id, { onDelete: "cascade" })
+    .references(() => usersTable.id, { onDelete: "cascade" })
     .notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  // images: text("image_urls"),
 });
 
-export const assignments = pgTable("assignments", {
+export const assignmentsTable = pgTable("assignments", {
   id: uuid("id").defaultRandom().primaryKey(),
   complaintId: uuid("complaint_id")
-    .references(() => complaints.id, { onDelete: "cascade" })
+    .references(() => complaintsTable.id, { onDelete: "cascade" })
     .notNull(),
   officerId: uuid("officer_id")
-    .references(() => users.id, { onDelete: "cascade" })
+    .references(() => usersTable.id, { onDelete: "cascade" })
     .notNull(),
   assignedBy: uuid("assigned_by")
-    .references(() => users.id, { onDelete: "cascade" })
+    .references(() => usersTable.id, { onDelete: "cascade" })
     .notNull(),
   assignedAt: timestamp("assigned_at").defaultNow().notNull(),
 });
 
-export const usersRelations = relations(users, ({ many }) => ({
-  complaints: many(complaints),
-  assignments: many(assignments),
+export const usersRelations = relations(usersTable, ({ many }) => ({
+  complaints: many(complaintsTable),
+  assignments: many(assignmentsTable),
 }));
 
-export const complaintsRelations = relations(complaints, ({ one, many }) => ({
-  createdBy: one(users, {
-    fields: [complaints.createdBy],
-    references: [users.id],
-  }),
-  assignments: many(assignments),
-}));
+export const complaintsRelations = relations(
+  complaintsTable,
+  ({ one, many }) => ({
+    createdBy: one(usersTable, {
+      fields: [complaintsTable.createdBy],
+      references: [usersTable.id],
+    }),
+    assignments: many(assignmentsTable),
+  })
+);
 
-export const assignmentsRelations = relations(assignments, ({ one }) => ({
-  complaint: one(complaints, {
-    fields: [assignments.complaintId],
-    references: [complaints.id],
+export const assignmentsRelations = relations(assignmentsTable, ({ one }) => ({
+  complaint: one(complaintsTable, {
+    fields: [assignmentsTable.complaintId],
+    references: [complaintsTable.id],
   }),
-  officer: one(users, {
-    fields: [assignments.officerId],
-    references: [users.id],
+  officer: one(usersTable, {
+    fields: [assignmentsTable.officerId],
+    references: [usersTable.id],
   }),
-  assignedBy: one(users, {
-    fields: [assignments.assignedBy],
-    references: [users.id],
+  assignedBy: one(usersTable, {
+    fields: [assignmentsTable.assignedBy],
+    references: [usersTable.id],
   }),
 }));
