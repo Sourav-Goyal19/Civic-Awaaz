@@ -37,7 +37,6 @@ export function OfficersPage() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-foreground">Officers</h1>
         <p className="text-muted-foreground">
@@ -45,7 +44,6 @@ export function OfficersPage() {
         </p>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -67,7 +65,10 @@ export function OfficersPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-600">
-              {officers?.reduce((acc, officer) => acc + 0, 0) || 0}
+              {officers?.reduce(
+                (acc, officer) => acc + officer.assignments,
+                0
+              ) || 0}
             </div>
           </CardContent>
         </Card>
@@ -121,7 +122,9 @@ export function OfficersPage() {
                   </TableCell>
                   <TableCell>{officer.email}</TableCell>
                   <TableCell>
-                    <Badge variant="outline">{0} assignments</Badge>
+                    <Badge variant="outline">
+                      {officer.assignments} assignments
+                    </Badge>
                   </TableCell>
                   <TableCell>
                     {0 > 0 ? (

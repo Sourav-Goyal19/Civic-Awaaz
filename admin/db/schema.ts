@@ -1,4 +1,11 @@
-import { pgTable, uuid, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  uuid,
+  text,
+  timestamp,
+  varchar,
+  integer,
+} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 export const usersTable = pgTable("users", {
@@ -8,6 +15,7 @@ export const usersTable = pgTable("users", {
   role: varchar("role", { length: 20 }).notNull(), // "citizen" | "admin" | "officer"
   password: text("password").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  assignments: integer("assignments").default(0).notNull(),
 });
 
 export const complaintsTable = pgTable("complaints", {

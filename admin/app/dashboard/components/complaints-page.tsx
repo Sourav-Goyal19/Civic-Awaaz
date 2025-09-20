@@ -79,8 +79,8 @@ export function ComplaintsPage({ type }: ComplaintsPageProps) {
 
     const matchesType =
       type === "new"
-        ? complaint.status === "pending" || complaint.status === "assigned"
-        : complaint.status === "resolved";
+        ? complaint.status === "pending"
+        : complaint.status === "resolved" || complaint.status === "assigned";
 
     return matchesSearch && matchesStatus && matchesType;
   });
@@ -207,7 +207,7 @@ export function ComplaintsPage({ type }: ComplaintsPageProps) {
                   {/* <TableHead>Submitted By</TableHead> */}
                   <TableHead>Status</TableHead>
                   <TableHead>Created At</TableHead>
-                  <TableHead>Actions</TableHead>
+                  {type === "new" && <TableHead>Actions</TableHead>}
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -243,11 +243,11 @@ export function ComplaintsPage({ type }: ComplaintsPageProps) {
                             Assigned to: {complaint.assignment.officer?.name}
                           </div>
                         )}
-                      {complaint.status === "resolved" && (
+                      {/* {complaint.status === "resolved" && (
                         <Badge variant="outline" className="text-green-600">
                           Completed
                         </Badge>
-                      )}
+                      )} */}
                     </TableCell>
                   </TableRow>
                 ))}

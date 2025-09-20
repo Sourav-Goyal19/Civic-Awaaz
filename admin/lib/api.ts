@@ -14,7 +14,7 @@ export const complaintsApi = {
 
   getStats: async (): Promise<ComplaintStats> => {
     const response = await api.get("/complaints/stats");
-    return response.data;
+    return response.data.stats;
   },
 
   updateStatus: async (id: string, status: string): Promise<Complaint> => {

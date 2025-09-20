@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "assignments" integer DEFAULT 0 NOT NULL;

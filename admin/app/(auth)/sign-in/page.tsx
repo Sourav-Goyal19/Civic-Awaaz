@@ -76,7 +76,7 @@ const SignInPage = () => {
       console.log("Login successful:", data);
       toast.success("Login successful! Redirecting...");
       setUser(data.user);
-      router.push("/");
+      router.push("/dashboard");
     },
     onError: (error: any) => {
       console.error("Login failed:", error);

@@ -1,7 +1,8 @@
 import { db } from "@/db/drizzle";
 import { corsHeaders } from "../headers";
-import { assignmentsTable } from "@/db/schema";
+import { assignmentsTable, complaintsTable, usersTable } from "@/db/schema";
 import { NextRequest, NextResponse } from "next/server";
+import { eq, sql } from "drizzle-orm";
 
 export async function OPTIONS() {
   return NextResponse.json({}, { headers: corsHeaders });
@@ -20,6 +21,20 @@ export async function POST(req: NextRequest) {
         assignedBy,
       })
       .returning();
+
+    await db
+      .update(complaintsTable)
+      .set({
+        status: "assigned",
+      })
+      .where(eq(complaintsTable.id, complaintId));
+
+    await db
+      .update(usersTable)
+      .set({
+        assignments: sql`${usersTable.assignments} + 1`,
+      })
+      .where(eq(usersTable.id, officerId));
 
     return NextResponse.json(
       {
